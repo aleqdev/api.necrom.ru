@@ -1,0 +1,25 @@
+[package]
+name = "api_necrom_ru"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.5.17"
+tokio = { version = "1.21.2", features = ["full"] }
+sqlx = { version = "0.6.2", features = ["runtime-tokio-rustls", "postgres", "json"] }
+tracing-subscriber = "0.3.16"
+tracing = "0.1.37"
+tower = "0.4.13"
+tower-http = { version = "0.3.4", features = [ "trace", "fs", "cors" ] }
+handlebars = "4.3.5"
+serde_json = "1.0.87"
+serde = { version = "1.0.147", features = [ "derive" ] }
+rust-crypto = "0.2.36"
+anyhow = "1.0.66"
+sea-query = { version = "0.27.2", features = [ "backend-postgres" ] }
+sea-query-binder = { version = "0.2.2", features = [ "sqlx-postgres" ] }
+tap = "1.0.1"
+bcrypt = "0.13"
+
+[profile.dev]
+debug = false

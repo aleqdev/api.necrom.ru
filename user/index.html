@@ -1,0 +1,105 @@
+ 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Сброс</title>
+  </head>
+  <body>
+    <div id="container">
+      <img class="glow-big" id="key" src="svg/key.svg" height="60%"/>
+      <h1 class="glow-small">Введите ключ сброса:</h1>
+      <input id="key-input" placeholder="< ... >" maxlength="64" oninput="on_letter()" spellcheck="false">
+      <button disabled id="restore-button" onclick="restore()">
+        <h1>Сброс</h1>
+      </button>
+    </div>
+  </body>
+  <style>
+    @font-face {
+        font-family: "Noto Sans";
+        src: url("font/font.ttf");
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: "Noto Sans";
+        letter-spacing: 4px;
+    }
+
+    html, body, #container {
+        height: 100%;
+        background-color: #040009;
+        color: #F5DEB3;
+    }
+
+    #container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #key {
+        user-select: none;
+        pointer-events: none;
+    }
+
+    #key-input {
+        margin-top: 30px;
+        border-width: 0px;
+        width: 80%;
+        font-size: 1.5em;
+        text-align: center;
+        transition: filter .2s ease-in-out;
+        outline: none;
+        box-shadow: 0px 0px 0px #ffffff00;
+        background-color: #040009;
+        color: #F5DEB3;
+    }
+
+    #key-input:focus {
+        box-shadow: 0px 0px 8px #F5DEB3;
+    }
+
+    #restore-button:disabled {
+        background-color: #040009;
+        color: #242424;
+    }
+
+    #restore-button {
+        margin-top: 30px;
+        background-color: red;
+        color: #000000;
+        border-width: 0px;
+        border-radius: 10px;
+        width: 8em;
+        transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    }
+
+    .glow-big {
+        filter: drop-shadow(0px 0px 8px #ff0404);
+    }
+
+    .glow-small {
+        filter: drop-shadow(0px 0px 6px #ff0404);
+    }
+  </style>
+  <script>
+    function on_letter() {
+        if (document.getElementById("key-input").value.length == 64) {
+            document.getElementById("restore-button").disabled = false;
+        } else {
+            document.getElementById("restore-button").disabled = true;
+        }
+    }
+
+    function restore() {
+        const text = document.getElementById("key-input").value.trim();
+        
+        window.location.href = "/restore/" + text;
+    }
+
+    document.getElementById("key-input").dispatchEvent(new Event("input"));
+  </script>
+</html>

@@ -1,0 +1,42 @@
+ 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Сброс</title>
+  </head>
+  <body>
+    <div id="container">
+      <h1 class="glow-small">Успешно сброшено</h1>
+    </div>
+  </body>
+  <style>
+    @font-face {
+        font-family: "Noto Sans";
+        src: url("/user/font/font.ttf");
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: "Noto Sans";
+        letter-spacing: 4px;
+    }
+
+    html, body, #container {
+        height: 100%;
+        background-color: #040009;
+        color: #F5DEB3;
+    }
+
+    #container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .glow-small {
+        filter: drop-shadow(0px 0px 8px #b2ffa2);
+    }
+  </style>
+</html>
