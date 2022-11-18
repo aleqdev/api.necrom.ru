@@ -133,8 +133,43 @@ async fn get_role(
     Redirect::to(&format!("/worker_role?id={id}"))
 }
 
+#[derive(serde::Deserialize)]
+struct DeleteParams {
+    pub db_user_email: String,
+    pub db_user_password: String
+}
+
+async fn delete_role(
+    Extension(ctx): Extension<ServerContext>,
+    Json(params): Json<DeleteParams>,
+    Path((id,)): Path<(i64,)>
+) -> impl IntoResponse {
+    use sea_query::{Expr, PostgresQueryBuilder};
+    use sea_query_binder::SqlxBinder;
+    use crate::types::WorkerRoleIden;
+
+    if let Err(code) = crate::utils::verify_auth(
+        &params.db_user_email,
+        &params.db_user_password,
+        &ctx
+    ).await {
+        return code.into_response();
+    }
+
+    let (sql, values) = sea_query::Query::delete()
+        .from_table(WorkerRoleIden::Table)
+        .and_where(Expr::col(WorkerRoleIden::Id).eq(id))
+        .returning_all()
+        .build_sqlx(PostgresQueryBuilder);
+
+    let result = sqlx::query_as_with::<_, WorkerRole, _>(&sql, values)
+        .fetch_optional(&ctx.pool).await;
+
+    crate::utils::give_hint_on_relation_error(result).into_response()
+}
+
 pub fn route(router: Router) -> Router {
     router
         .route("/worker_role", get(role).put(put_role))
-        .route("/worker_role/:id", get(get_role).patch(patch_role))
+        .route("/worker_role/:id", get(get_role).patch(patch_role).delete(delete_role))
 }

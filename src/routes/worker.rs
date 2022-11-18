@@ -96,7 +96,7 @@ async fn worker(
         })
         .build_sqlx(PostgresQueryBuilder);
 
-    let rows = sqlx::query_as_with::<_, crate::types::Worker, _>(&sql, values)
+    let rows = sqlx::query_as_with::<_, Worker, _>(&sql, values)
         .fetch_all(&ctx.pool).await.expect("Failed to execute");
 
     Json(rows)
@@ -235,13 +235,48 @@ async fn patch_worker(
 }
 
 async fn get_worker(
-    Path((id,)): Path<(i32,)>
+    Path((id,)): Path<(i64,)>
 ) -> impl IntoResponse {
     Redirect::to(&format!("/worker?id={id}"))
+}
+
+#[derive(serde::Deserialize)]
+struct DeleteParams {
+    pub db_user_email: String,
+    pub db_user_password: String
+}
+
+async fn delete_worker(
+    Extension(ctx): Extension<ServerContext>,
+    Json(params): Json<DeleteParams>,
+    Path((id,)): Path<(i64,)>
+) -> impl IntoResponse {
+    use sea_query::{Expr, PostgresQueryBuilder};
+    use sea_query_binder::SqlxBinder;
+    use crate::types::WorkerIden;
+
+    if let Err(code) = crate::utils::verify_auth(
+        &params.db_user_email,
+        &params.db_user_password,
+        &ctx
+    ).await {
+        return code.into_response();
+    }
+
+    let (sql, values) = sea_query::Query::delete()
+        .from_table(WorkerIden::Table)
+        .and_where(Expr::col(WorkerIden::Id).eq(id))
+        .returning_all()
+        .build_sqlx(PostgresQueryBuilder);
+
+    let result = sqlx::query_as_with::<_, Worker, _>(&sql, values)
+        .fetch_optional(&ctx.pool).await;
+
+    crate::utils::give_hint_on_relation_error(result).into_response()
 }
 
 pub fn route(router: Router) -> Router {
     router
         .route("/worker", get(worker).put(put_worker))
-        .route("/worker/:id", get(get_worker).patch(patch_worker))
+        .route("/worker/:id", get(get_worker).patch(patch_worker).delete(delete_worker))
 }

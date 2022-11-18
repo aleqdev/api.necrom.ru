@@ -17,7 +17,9 @@ create table city(
 	name		character varying(128) not null,
 	crt_date	TIMESTAMP with time zone NOT NULL DEFAULT NOW());
 
-
+ALTER TABLE city SET UNLOGGED;
+ALTER TABLE region SET UNLOGGED;
+ALTER TABLE country SET UNLOGGED;
 
 insert into country(id, name) values (0, 'Россия');
 insert into country(id, name) values (1, 'Украина');
@@ -19135,3 +19137,7 @@ insert into city(region_id, name) values (1442, 'Rambouillet');
 insert into city(region_id, name) values (1442, 'Verneuil-sur-Seine');
 insert into city(region_id, name) values (1442, 'Versailles');
 insert into city(region_id, name) values (1442, 'Vert');
+
+ALTER TABLE country SET LOGGED;
+ALTER TABLE region SET LOGGED;
+ALTER TABLE city SET LOGGED;
