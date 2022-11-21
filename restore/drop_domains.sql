@@ -1,0 +1,2 @@
+DROP DOMAIN IF EXISTS email;
+DROP DOMAIN IF EXISTS phone_number;

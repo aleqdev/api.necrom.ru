@@ -2,6 +2,8 @@ logs.sql
 drop_dbuser.sql
 drop_common.sql
 drop_geo.sql
+drop_domains.sql
+domains.sql
 geo.sql
 common.sql
 dbuser.sql

@@ -11,8 +11,8 @@ CREATE TABLE worker (
     surname VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
 
-    phone_number VARCHAR(16) NOT NULL,
-    email VARCHAR(254),
+    phone_number phone_number NOT NULL,
+    email email,
 
     role_id INTEGER NOT NULL REFERENCES worker_role (id)
 );
@@ -22,5 +22,5 @@ CREATE TABLE hotel (
     name VARCHAR(200) NOT NULL,
     city_id BIGINT NOT NULL REFERENCES city (id),
     owner_id INTEGER NOT NULL REFERENCES worker (id),
-    description TEXT
+    description VARCHAR(500)
 );
