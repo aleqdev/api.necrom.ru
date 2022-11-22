@@ -1,8 +1,7 @@
 
-use axum::{Extension, Json, Router};
-use axum::extract::{Path, Query};
-use axum::http::StatusCode;
-use axum::response::{IntoResponse, Redirect, Result as AxumResult};
+use axum::{Extension, Router};
+use axum::extract::{Path, Json, Query};
+use axum::response::{IntoResponse, Redirect};
 use axum::routing::get;
 use sea_query::Alias;
 use crate::ServerContext;
@@ -66,9 +65,9 @@ async fn region(
         .build_sqlx(PostgresQueryBuilder);
 
     let rows = sqlx::query_as_with::<_, crate::types::Region, _>(&sql, values)
-        .fetch_all(&ctx.pool).await.expect("Failed to execute");
+        .fetch_all(&ctx.pool).await;
 
-    Json(rows)
+    crate::utils::give_hint_on_relation_error_all(rows).into_response()
 }
 
 #[derive(serde::Deserialize)]
@@ -82,16 +81,18 @@ struct PutParams {
 async fn put_region(
     Extension(ctx): Extension<ServerContext>,
     Json(params): Json<PutParams>
-) -> AxumResult<Json<Region>> {
+) -> impl IntoResponse {
     use sea_query::PostgresQueryBuilder;
     use sea_query_binder::SqlxBinder;
     use crate::types::RegionIden;
 
-    crate::utils::verify_auth(
+    if let Err(code) = crate::utils::verify_auth(
         &params.db_user_email,
         &params.db_user_password,
         &ctx
-    ).await?;
+    ).await {
+      return code.into_response()
+    }
 
     let (sql, values) = sea_query::Query::insert()
         .into_table(RegionIden::Table)
@@ -99,17 +100,17 @@ async fn put_region(
             RegionIden::Name,
             RegionIden::CountryId
         ])
-        .values([
+        .values_panic([
             params.name.into(),
             params.country_id.into()
-        ]).map_err(|_| StatusCode::BAD_REQUEST)?
+        ])
         .returning_all()
         .build_sqlx(PostgresQueryBuilder);
 
-    let rows = sqlx::query_as_with::<_, Region, _>(&sql, values)
-        .fetch_one(&ctx.pool).await.expect("Failed to execute");
+    let result = sqlx::query_as_with::<_, Region, _>(&sql, values)
+        .fetch_optional(&ctx.pool).await;
 
-    Ok(Json(rows))
+    crate::utils::give_hint_on_relation_error_option(result).into_response()
 }
 
 #[derive(serde::Deserialize)]
@@ -124,17 +125,19 @@ async fn patch_region(
     Extension(ctx): Extension<ServerContext>,
     Json(params): Json<PatchParams>,
     Path((id,)): Path<(i32,)>
-) -> AxumResult<Json<Region>> {
+) -> impl IntoResponse {
     use sea_query::{Expr, PostgresQueryBuilder};
     use sea_query_binder::SqlxBinder;
     use tap::Pipe;
     use crate::types::RegionIden;
 
-    crate::utils::verify_auth(
+    if let Err(code) = crate::utils::verify_auth(
         &params.db_user_email,
         &params.db_user_password,
         &ctx
-    ).await?;
+    ).await {
+      return code.into_response();
+    }
 
     let (sql, values) = sea_query::Query::update()
         .table(RegionIden::Table)
@@ -154,13 +157,10 @@ async fn patch_region(
         .returning_all()
         .build_sqlx(PostgresQueryBuilder);
 
-    let rows = sqlx::query_as_with::<_, Region, _>(&sql, values)
-        .fetch_optional(&ctx.pool).await.expect("Failed to execute");
+    let result = sqlx::query_as_with::<_, Region, _>(&sql, values)
+        .fetch_optional(&ctx.pool).await;
 
-    match rows {
-        Some(rows) => Ok(Json(rows)),
-        None => Err(StatusCode::BAD_REQUEST.into())
-    }
+    crate::utils::give_hint_on_relation_error_option(result).into_response()
 }
 
 async fn get_region(

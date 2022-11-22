@@ -1,0 +1,2 @@
+DROP ROLE IF EXISTS anon;
+DROP ROLE IF EXISTS authenticator;

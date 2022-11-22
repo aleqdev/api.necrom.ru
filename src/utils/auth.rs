@@ -9,19 +9,19 @@ pub async fn verify_auth(
     use sea_query::{Expr, PostgresQueryBuilder};
     use sea_query_binder::SqlxBinder;
     use bcrypt::verify;
-    use crate::types::DbUserIden;
+    use crate::types::DatabaseUserIden;
 
     let (sql, values) = sea_query::Query::select()
-        .from(DbUserIden::Table)
+        .from(DatabaseUserIden::Table)
         .columns([
-            DbUserIden::Id,
-            DbUserIden::Email,
-            DbUserIden::PasswordHash,
+            DatabaseUserIden::Id,
+            DatabaseUserIden::Email,
+            DatabaseUserIden::PasswordHash,
         ])
-        .and_where(Expr::col(DbUserIden::Email).eq(email))
+        .and_where(Expr::col(DatabaseUserIden::Email).eq(email))
         .build_sqlx(PostgresQueryBuilder);
 
-    let user = sqlx::query_as_with::<_, crate::types::DbUser, _>(&sql, values)
+    let user = sqlx::query_as_with::<_, crate::types::DatabaseUser, _>(&sql, values)
         .fetch_optional(&ctx.pool).await.expect("Failed to execute");
 
     let Some(user) = user else {

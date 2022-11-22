@@ -1,5 +1,5 @@
 
-use axum::{Extension, Json, Router};
+use axum::{Extension, Router};
 use axum::extract::Query;
 use axum::response::IntoResponse;
 use axum::routing::get;
@@ -41,9 +41,9 @@ async fn country(
         .build_sqlx(PostgresQueryBuilder);
 
     let rows = sqlx::query_as_with::<_, crate::types::Country, _>(&sql, values)
-        .fetch_all(&ctx.pool).await.expect("Failed to execute");
+        .fetch_all(&ctx.pool).await;
 
-    Json(rows)
+    crate::utils::give_hint_on_relation_error_all(rows).into_response()
 }
 
 pub fn route(router: Router) -> Router {

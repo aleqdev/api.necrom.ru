@@ -1,1 +1,2 @@
-DROP TABLE IF EXISTS db_user;
+DROP TABLE IF EXISTS internal.database_user;
+DROP SCHEMA IF EXISTS internal;
