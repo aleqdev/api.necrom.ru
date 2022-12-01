@@ -3,6 +3,9 @@ drop_common.sql
 drop_geo.sql
 drop_domains.sql
 drop_users.sql
+drop_cache_reload.sql
+cache_reload.sql
+cache_reload_trigger.sql
 domains.sql
 geo.sql
 common.sql
@@ -10,3 +13,4 @@ dbuser.sql
 defaults.sql
 users.sql
 logs.sql
+search_path.sql

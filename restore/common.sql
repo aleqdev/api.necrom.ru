@@ -51,6 +51,31 @@ CREATE TABLE tour (
     arrival_date TIMESTAMP NOT NULL,
     departure_date TIMESTAMP NOT NULL,
     feeding_type_id INTEGER NOT NULL REFERENCES tour_feeding_type (id),
-    cost DECIMAL(12,2) NOT NULL,
+    cost DECIMAL(12, 2) NOT NULL,
     description VARCHAR(500)
 );
+
+CREATE TABLE tour_order_payment_type (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+CREATE TABLE tour_order_group (
+  id SERIAL PRIMARY KEY,
+)
+
+CREATE TABLE tour_order (
+    id SERIAL PRIMARY KEY,
+    client_id INTEGER NOT NULL REFERENCES client (id),
+    payment_type_id INTEGER NOT NULL REFERENCES tour_order_payment_type (id),
+    tour_id INTEGER NOT NULL REFERENCES tour (id),
+    price DECIMAL(12, 2) NOT NULL,
+    people_count INTEGER NOT NULL,
+    family_id INTEGER NOT NULL REFERENCES tour_order_group (id)
+);
+
+CREATE VIEW tour_order_view AS
+SELECT
+    *,
+    price * people_count AS cost
+FROM tour_order;

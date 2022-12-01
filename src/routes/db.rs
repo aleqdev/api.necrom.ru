@@ -1,27 +1,18 @@
 use axum::body::Body;
 use axum::{Extension, Router};
-use axum::http::{Request, StatusCode, Uri};
+use axum::http::{HeaderValue, Request, StatusCode, Uri};
 use axum::response::{IntoResponse};
 use axum::routing::get;
 use crate::ServerContext;
 
 async fn db(Extension(ctx): Extension<ServerContext>, mut req: Request<Body>) -> impl IntoResponse {
-    let Some(db_user_email) = req.headers().get("DB-User-Email") else {
-        return StatusCode::BAD_REQUEST.into_response()
+    let Some(Ok(db_user_email)) = req.headers().get("DB-User-Email").map(|x| x.to_str()) else {
+        return StatusCode::UNAUTHORIZED.into_response()
     };
 
-    let Ok(db_user_email) = db_user_email.to_str() else {
-        return StatusCode::BAD_REQUEST.into_response()
+    let Some(Ok(db_user_password)) = req.headers().get("DB-User-Password").map(|x| x.to_str()) else {
+        return StatusCode::UNAUTHORIZED.into_response()
     };
-
-    let Some(db_user_password) = req.headers().get("DB-User-Password") else {
-        return StatusCode::BAD_REQUEST.into_response()
-    };
-
-    let Ok(db_user_password) = db_user_password.to_str() else {
-        return StatusCode::BAD_REQUEST.into_response()
-    };
-
 
     if let Err(code) = crate::utils::verify_auth(
         db_user_email,
@@ -51,7 +42,10 @@ async fn db(Extension(ctx): Extension<ServerContext>, mut req: Request<Body>) ->
     let resp = ctx.client.request(req).await;
 
     return match resp {
-        Ok(resp) => resp.into_response(),
+        Ok(mut resp) => {
+            resp.headers_mut().insert("Access-Control-Allow-Origin", HeaderValue::from_static("*"));
+            resp.into_response()
+        },
         Err(err) => {
             tracing::info!("error: {}", err);
             return StatusCode::BAD_REQUEST.into_response()

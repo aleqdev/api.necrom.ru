@@ -12,7 +12,7 @@ pub async fn verify_auth(
     use crate::types::DatabaseUserIden;
 
     let (sql, values) = sea_query::Query::select()
-        .from(DatabaseUserIden::Table)
+        .from((DatabaseUserIden::Schema, DatabaseUserIden::Table))
         .columns([
             DatabaseUserIden::Id,
             DatabaseUserIden::Email,

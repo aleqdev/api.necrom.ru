@@ -7,6 +7,8 @@ pub struct DatabaseUser {
 
 #[derive(sea_query::Iden)]
 pub enum DatabaseUserIden {
+    #[iden = "internal"]
+    Schema,
     #[iden = "database_user"]
     Table,
     Id,

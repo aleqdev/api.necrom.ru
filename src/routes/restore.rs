@@ -38,8 +38,14 @@ async fn restore(
 
             tracing::info!("EXECUTING RESTORE FILE: {}", path.display());
 
-            for stmt in std::fs::read_to_string(&path)?.split(";") {
-                sqlx::query(stmt).execute(&ctx.pool).await?;
+            let contents = std::fs::read_to_string(&path)?;
+
+            if contents.contains("$$") {
+              sqlx::query(&contents).execute(&ctx.pool).await?;
+            } else {
+              for query in std::fs::read_to_string(&path)?.split(';') {
+                sqlx::query(&query).execute(&ctx.pool).await?;
+              }
             }
         }
 
