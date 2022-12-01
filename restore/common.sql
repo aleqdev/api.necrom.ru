@@ -62,7 +62,7 @@ CREATE TABLE tour_order_payment_type (
 
 CREATE TABLE tour_order_group (
   id SERIAL PRIMARY KEY
-)
+);
 
 CREATE TABLE tour_order (
     id SERIAL PRIMARY KEY,
