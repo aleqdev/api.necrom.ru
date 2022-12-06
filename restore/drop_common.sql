@@ -1,7 +1,9 @@
 DROP VIEW IF EXISTS tour_order_view;
+DROP TABLE IF EXISTS tour_order_purchase;
+DROP TABLE IF EXISTS tour_order_payment;
 DROP TABLE IF EXISTS tour_order;
 DROP TABLE IF EXISTS tour_order_payment_type;
-DROP TABLE IF EXISTS tour_order_family;
+DROP TABLE IF EXISTS tour_order_group;
 DROP TABLE IF EXISTS tour;
 DROP TABLE IF EXISTS tour_feeding_type;
 DROP TABLE IF EXISTS hotel;

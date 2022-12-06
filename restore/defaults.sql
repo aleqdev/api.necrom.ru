@@ -141,3 +141,49 @@ INSERT INTO tour (
     10005,
     'Расположение Путешествовать экономно — легко. Отель «Гостиница Ковров» расположен в Коврове. Этот отель находится в самом центре города. Перед сном есть возможность прогуляться вдоль главных достопримечательностей. Рядом с отелем — Борисоглебский собор, Церковь Бориса и Глеба и Свято-Васильевский Монастырь.В отеле Время вспомнить о хлебе насущном! Для гостей работает ресторан. Кафе отеля — удобное место для перекуса.'
 );
+
+INSERT INTO tour (
+    hotel_id,
+    arrival_date,
+    departure_date,
+    feeding_type_id,
+    cost,
+    description
+) VALUES (
+    2,
+    '2022-5-15',
+    '2022-5-8',
+    2,
+    70005,
+    'Хороший отель, уютные номера, все чистенько и опрятно. Завтраки хорошие, отличный фитнес центр и бассейн.'
+);
+
+INSERT INTO tour_order_payment_type (
+    name
+) VALUES (
+    'Предоплата'
+);
+
+INSERT INTO tour_order_payment_type (
+    name
+) VALUES (
+    'Кредит'
+);
+
+INSERT INTO tour_order_group DEFAULT VALUES;
+
+INSERT INTO tour_order (
+    client_id,
+    payment_type_id,
+    tour_id,
+    price,
+    people_count,
+    group_id
+) VALUES (
+    1,
+    1,
+    1,
+    70005,
+    2,
+    1
+);

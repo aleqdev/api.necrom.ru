@@ -71,7 +71,8 @@ CREATE TABLE tour_order (
     tour_id INTEGER NOT NULL REFERENCES tour (id),
     price DECIMAL(12, 2) NOT NULL,
     people_count INTEGER NOT NULL,
-    family_id INTEGER NOT NULL REFERENCES tour_order_group (id)
+    group_id INTEGER NOT NULL REFERENCES tour_order_group (id),
+    status tour_order_status NOT NULL DEFAULT 'active'
 );
 
 CREATE VIEW tour_order_view AS
@@ -79,3 +80,13 @@ SELECT
     *,
     price * people_count AS cost
 FROM tour_order;
+
+CREATE TABLE tour_order_payment (
+    tour_order_id INTEGER NOT NULL REFERENCES tour_order (id),
+    money_received DECIMAL(12, 2) NOT NULL
+);
+
+CREATE TABLE tour_order_purchase (
+    tour_order_id INTEGER NOT NULL REFERENCES tour_order (id),
+    reservations_confirmed BOOLEAN NOT NULL DEFAULT FALSE
+);
