@@ -82,11 +82,13 @@ SELECT
 FROM tour_order;
 
 CREATE TABLE tour_order_payment (
+    id SERIAL PRIMARY KEY,
     tour_order_id INTEGER NOT NULL REFERENCES tour_order (id),
     money_received DECIMAL(12, 2) NOT NULL
 );
 
 CREATE TABLE tour_order_purchase (
+    id SERIAL PRIMARY KEY,
     tour_order_id INTEGER NOT NULL REFERENCES tour_order (id),
     reservations_confirmed BOOLEAN NOT NULL DEFAULT FALSE
 );
