@@ -89,6 +89,11 @@ CREATE TABLE tour_order_payment (
 
 CREATE TABLE tour_order_purchase (
     id SERIAL PRIMARY KEY,
-    tour_order_id INTEGER NOT NULL REFERENCES tour_order (id),
+    client_id INTEGER NOT NULL REFERENCES client (id),
+    payment_type_id INTEGER NOT NULL REFERENCES tour_order_payment_type (id),
+    tour_id INTEGER NOT NULL REFERENCES tour (id),
+    price DECIMAL(12, 2) NOT NULL,
+    people_count INTEGER NOT NULL,
+    group_id INTEGER NOT NULL REFERENCES tour_order_group (id),
     reservations_confirmed BOOLEAN NOT NULL DEFAULT FALSE
 );
