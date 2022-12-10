@@ -97,3 +97,9 @@ CREATE TABLE tour_order_purchase (
     group_id INTEGER NOT NULL REFERENCES tour_order_group (id),
     reservations_confirmed BOOLEAN NOT NULL DEFAULT FALSE
 );
+
+CREATE VIEW tour_order_purchase_view AS
+SELECT
+    *,
+    price * people_count AS cost
+FROM tour_order_purchase;
