@@ -51,7 +51,7 @@ CREATE TABLE tour (
     arrival_date TIMESTAMP NOT NULL,
     departure_date TIMESTAMP NOT NULL,
     feeding_type_id INTEGER NOT NULL REFERENCES tour_feeding_type (id),
-    cost DECIMAL(12, 2) NOT NULL,
+    price DECIMAL(12, 2) NOT NULL,
     description VARCHAR(500)
 );
 
@@ -72,7 +72,8 @@ CREATE TABLE tour_order (
     price DECIMAL(12, 2) NOT NULL,
     people_count INTEGER NOT NULL,
     group_id INTEGER NOT NULL REFERENCES tour_order_group (id),
-    status tour_order_status NOT NULL DEFAULT 'active'
+    status tour_order_status NOT NULL DEFAULT 'active',
+    crt_date TIMESTAMP with time zone NOT NULL DEFAULT NOW()
 );
 
 CREATE VIEW tour_order_view AS
@@ -84,7 +85,8 @@ FROM tour_order;
 CREATE TABLE tour_order_payment (
     id SERIAL PRIMARY KEY,
     tour_order_id INTEGER NOT NULL REFERENCES tour_order (id),
-    money_received DECIMAL(12, 2) NOT NULL
+    money_received DECIMAL(12, 2) NOT NULL,
+    crt_date TIMESTAMP with time zone NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE tour_order_purchase (
@@ -95,7 +97,8 @@ CREATE TABLE tour_order_purchase (
     price DECIMAL(12, 2) NOT NULL,
     people_count INTEGER NOT NULL,
     group_id INTEGER NOT NULL REFERENCES tour_order_group (id),
-    reservations_confirmed BOOLEAN NOT NULL DEFAULT FALSE
+    reservations_confirmed BOOLEAN NOT NULL DEFAULT FALSE,
+    crt_date TIMESTAMP with time zone NOT NULL DEFAULT NOW()
 );
 
 CREATE VIEW tour_order_purchase_view AS
@@ -103,3 +106,7 @@ SELECT
     *,
     price * people_count AS cost
 FROM tour_order_purchase;
+
+CREATE VIEW tour_order_payment_total_money_received AS 
+SELECT SUM(money_received)
+FROM tour_order_payment;

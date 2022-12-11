@@ -1,3 +1,7 @@
+DROP FUNCTION IF EXISTS tour_order_turnover;
+DROP VIEW IF EXISTS tour_order_payment_total_money_received;
+DROP VIEW IF EXISTS tour_order_payment_view;
+DROP VIEW IF EXISTS tour_order_purchase_view;
 DROP VIEW IF EXISTS tour_order_view;
 DROP TABLE IF EXISTS tour_order_purchase;
 DROP TABLE IF EXISTS tour_order_payment;

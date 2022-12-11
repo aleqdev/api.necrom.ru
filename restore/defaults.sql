@@ -131,7 +131,7 @@ INSERT INTO tour (
     arrival_date,
     departure_date,
     feeding_type_id,
-    cost,
+    price,
     description
 ) VALUES (
     1,
@@ -147,7 +147,7 @@ INSERT INTO tour (
     arrival_date,
     departure_date,
     feeding_type_id,
-    cost,
+    price,
     description
 ) VALUES (
     2,
