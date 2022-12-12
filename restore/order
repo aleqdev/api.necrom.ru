@@ -9,7 +9,8 @@ cache_reload_trigger.sql
 domains.sql
 geo.sql
 common.sql
-tour_order_turnover.sql
+tour_order_turnover_ordered.sql
+tour_order_turnover_selled.sql
 dbuser.sql
 defaults.sql
 users.sql
