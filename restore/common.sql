@@ -86,7 +86,8 @@ CREATE TABLE tour_order_payment (
     id SERIAL PRIMARY KEY,
     tour_order_id INTEGER NOT NULL REFERENCES tour_order (id),
     money_received DECIMAL(12, 2) NOT NULL,
-    crt_date TIMESTAMP with time zone NOT NULL DEFAULT NOW()
+    crt_date TIMESTAMP with time zone NOT NULL DEFAULT NOW(),
+    UNIQUE (tour_order_id)
 );
 
 CREATE TABLE tour_order_purchase (
@@ -98,7 +99,9 @@ CREATE TABLE tour_order_purchase (
     people_count INTEGER NOT NULL,
     group_id INTEGER NOT NULL REFERENCES tour_order_group (id),
     reservations_confirmed BOOLEAN NOT NULL DEFAULT FALSE,
-    crt_date TIMESTAMP with time zone NOT NULL DEFAULT NOW()
+    crt_date TIMESTAMP with time zone NOT NULL DEFAULT NOW(),
+    tour_order_id INTEGER NOT NULL REFERENCES tour_order (id),
+    UNIQUE (tour_order_id)
 );
 
 CREATE VIEW tour_order_purchase_view AS
